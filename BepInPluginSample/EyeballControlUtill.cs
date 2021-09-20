@@ -16,6 +16,17 @@ namespace COM3D2.EyeballControl.Plugin
         {
             MaidActivePatch.setActiveMaid3 += setActiveMaid;
             MaidActivePatch.deactivateMaid += deactivateMaid;
+            foreach (var item in MaidActivePatch.Maids2)
+            {
+                setActiveMaid(item.Key, item.Value);
+            }
+        }
+
+        internal static void deinit()
+        {
+            MaidActivePatch.setActiveMaid3 -= setActiveMaid;
+            MaidActivePatch.deactivateMaid -= deactivateMaid;
+            maids.Clear();
         }
 
         private static void setActiveMaid(int obj, Maid maid)

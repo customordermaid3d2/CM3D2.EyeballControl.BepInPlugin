@@ -35,6 +35,9 @@ namespace COM3D2.EyeballControl.Plugin
 
         public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
 
+        public ConfigEntry<bool> isEnable;
+        public MyGUI gui;
+
         public EyeballControl()
         {
             instance = this;
@@ -47,20 +50,37 @@ namespace COM3D2.EyeballControl.Plugin
         public void Awake()
         {
             EyeballControl.myLog.LogMessage("Awake",MyUtill.Get_BuildDateTime(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version));
-
-            EyeballControlUtill.init();
+            isEnable = Config.Bind("plugin", "isEnable", true);
+            isEnable.SettingChanged += isEnableSettingChanged;
+            //EyeballControlUtill.init();
 
             // 단축키 기본값 설정
             //ShowCounter = Config.Bind("KeyboardShortcut", "KeyboardShortcut0", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
 
             //SampleConfig.Install(EyeballControl.myLog.log);            
 
-        }       
+        }
 
-        /*
+        private void isEnableSettingChanged(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    SettingChangedEventArgs SettingChanged = e as SettingChangedEventArgs;
+            //    SettingChanged.ChangedSetting.DefaultValue
+            //}
+            //catch (Exception)
+            //{
+            //
+            //    //throw;
+            //}
+            //EyeballControl.myLog.LogMessage("isEnableSettingChanged", e.GetType(), e.ToString());
+            enabled =isEnable.Value;
+        }
+
         public void OnEnable()
         {
             EyeballControl.myLog.LogMessage("OnEnable");
+            EyeballControlUtill.init();
 
             //SceneManager.sceneLoaded += this.OnSceneLoaded;
 
@@ -68,6 +88,7 @@ namespace COM3D2.EyeballControl.Plugin
             //harmony = Harmony.CreateAndPatchAll(typeof(EyeballControlPatch));
 
         }
+        /*
         */
 
         /// <summary>
@@ -77,19 +98,20 @@ namespace COM3D2.EyeballControl.Plugin
         {
             EyeballControl.myLog.LogMessage("Start");
 
-            EyeballControlGUI.Install<EyeballControlGUI>(gameObject, Config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "EC", COM3D2.EyeballControl.Plugin.Properties.Resources.icon, new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
+            gui=EyeballControlGUI.Install<EyeballControlGUI>(gameObject, Config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "EC", COM3D2.EyeballControl.Plugin.Properties.Resources.icon, new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
         }
 
-        /*
         public void OnDisable()
         {
             EyeballControl.myLog.LogMessage("OnDisable");
+            EyeballControlUtill.deinit();
 
             //SceneManager.sceneLoaded -= this.OnSceneLoaded;
 
             //harmony?.UnpatchSelf();// ==harmony.UnpatchAll(harmony.Id);
             //harmony.UnpatchAll(); // 정대 사용 금지. 다름 플러그인이 패치한것까지 다 풀려버림
         }
+        /*
         */
     }
 }

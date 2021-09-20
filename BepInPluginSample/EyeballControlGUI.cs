@@ -17,7 +17,7 @@ namespace COM3D2.EyeballControl.Plugin
         private static bool isReverse;
 
         private static bool isOn;
-
+        private bool isActive;
 
         public override void Awake()
         {
@@ -68,9 +68,25 @@ namespace COM3D2.EyeballControl.Plugin
             //base.WindowFunctionBody(id);
             //GUI.enabled = maidEyesData != null;
 
-            GUI.enabled = isOn;
+            //GUI.enabled = isOn;
             GUI.changed = false;
+            GUI.enabled = true;
 
+            isActive = GUILayout.Toggle(isActive, "적용 시작");
+            if (GUI.changed)
+            {
+                if (isActive)
+                {
+                    EyeballControlUtill.init();
+                }
+                else
+                {
+                    EyeballControlUtill.deinit();
+                }
+                GUI.changed = false;
+            }
+
+            GUI.enabled = isOn && isActive;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("↓", GUILayout.Width(20));
